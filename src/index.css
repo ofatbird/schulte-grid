@@ -1,0 +1,20 @@
+.board {
+    display: grid;
+    /* grid-template-columns: 40px;
+    grid-template-rows: 40px; */
+}
+
+.square {
+    padding: 5px;
+    width: 40px;
+    height: 40px;
+    background: #ffffff;
+    outline: none;
+    border: 1px solid black;
+    margin-top: -1px;
+    margin-left: -1px;
+}
+
+.square:active {
+    background: #f18282
+}

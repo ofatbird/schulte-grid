@@ -5,9 +5,10 @@ import './index.css';
 const getRandomInt = max => Math.floor(Math.random() * Math.floor(max));
 
 class Square extends React.Component {
+
     render() {
         return (
-            <button className="square">
+            <button className="square" onClick={() => {this.props.buttonClicked(this.props.value)}}>
                 {this.props.value}
             </button>
         )
@@ -15,25 +16,29 @@ class Square extends React.Component {
 }
 
 class Board extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
-            numbers: this.randomNumber(25)
+            current: 0,
+            numbers: this.randomNumber(36)
+        }
+    }
+
+    handleChildClick(i) {
+        if (this.state.current + 1 === i) {
+            this.setState({ current: i})
+        } else {
+            alert(`Current value is ${this.state.current}`)
         }
     }
 
     renderSquare(i) {
-        return <Square value={i} />
+        return <Square value={i} buttonClicked={this.handleChildClick}/>
     }
 
     randomNumber(n) {
         const numpool = Array(n).fill(null).map((_, index) => index + 1)
-        console.log(numpool)
-        return Array(n).fill(null).map(_ => {
-            // console.log(numpool.length)
-            // console.log(numpool.splice(getRandomInt(numpool.length), 1))
-            return numpool.splice(getRandomInt(numpool.length), 1).pop()
-        })
+        return Array(n).fill(null).map(_ => numpool.splice(getRandomInt(numpool.length), 1).pop())
     }
 
     render() {
@@ -45,10 +50,9 @@ class Board extends React.Component {
             <div className="board">
                 {maps.map((_, index) => {
                     const subNum = numbers.slice(index * base, (index + 1) * base)
-                    console.log(subNum, numbers)
                     return (
                         <div className="row">
-                            {subNum.map(_ => this.renderSquare(_))}
+                            {subNum.map(num => this.renderSquare(num))}
                         </div>
                     )
                 })}
