@@ -8,7 +8,7 @@ class Square extends React.Component {
 
     render() {
         return (
-            <button className="square" onClick={() => {this.props.buttonClicked(this.props.value)}}>
+            <button className="square" onClick={this.props.buttonClicked}>
                 {this.props.value}
             </button>
         )
@@ -20,20 +20,26 @@ class Board extends React.Component {
         super(props);
         this.state = {
             current: 0,
-            numbers: this.randomNumber(36)
+            timer: null,
+            numbers: this.randomNumber(props.level ** 2)
         }
     }
 
     handleChildClick(i) {
         if (this.state.current + 1 === i) {
-            this.setState({ current: i})
+            if (i === this.props.level ** 2) {
+                console.log(this.props.counter())
+                this.setState({ current: 0 })
+                return
+            }
+            this.setState({ current: i })
         } else {
             alert(`Current value is ${this.state.current}`)
         }
     }
 
     renderSquare(i) {
-        return <Square value={i} buttonClicked={this.handleChildClick}/>
+        return <Square value={i} buttonClicked={() => this.handleChildClick(i)} />
     }
 
     randomNumber(n) {
@@ -43,8 +49,7 @@ class Board extends React.Component {
 
     render() {
         const { numbers } = this.state
-        console.log(numbers)
-        const base = Math.sqrt(numbers.length)
+        const base = this.props.level
         const maps = Array(base).fill(null)
         return (
             <div className="board">
@@ -61,7 +66,34 @@ class Board extends React.Component {
     }
 }
 
+class Game extends React.Component {
+    constructor() {
+        super()
+        this.state = {
+            level: 5,
+            start: null,
+        }
+    }
+
+    handleButtonClick = () => {
+        this.setState({ start: Date.now() })
+    }
+
+    countdown() {
+        return Date.now() - this.state.start
+    }
+
+    render() {
+        return (
+            <div>
+                <button onClick={this.handleButtonClick}>Click to start</button>
+                <Board level={this.state.level} counter={() => { return this.countdown() }} />
+            </div>
+        )
+    }
+}
+
 ReactDOM.render(
-    <Board />,
+    <Game />,
     document.getElementById('root')
 )
